@@ -1,13 +1,13 @@
-// Fig. 7.14: GradeBook.java
-// Grade book using an array to store test grades.
+// Fig. 7.18: GradeBook.java
+// Grade book using two-dimensional array to store grades.
 
 public class GradeBook
 {
-   private String courseName; // name of course this GradeBook represents
-   private int grades[]; // array of student grades
+   private String courseName; // name of course this grade book represents
+   private int grades[][]; // two-dimensional array of student grades
    
    // two-argument constructor initializes courseName and grades array
-   public GradeBook( String name, int gradesArray[] )
+   public GradeBook( String name, int gradesArray[][] )
    {
       courseName = name; // initialize courseName
       grades = gradesArray; // store grades
@@ -39,29 +39,32 @@ public class GradeBook
       // output grades array
       outputGrades();
 
-      // call method getAverage to calculate the average grade      
-      System.out.printf( "\nClass average is %.2f\n", getAverage() ); 
-
       // call methods getMinimum and getMaximum
-      System.out.printf( "Lowest grade is %d\nHighest grade is %d\n\n",
-         getMinimum(), getMaximum() );
+      System.out.printf( "\n%s %d\n%s %d\n\n", 
+         "Lowest grade in the grade book is", getMinimum(), 
+         "Highest grade in the grade book is", getMaximum() );
 
-      // call outputBarChart to print grade distribution chart
+      // output grade distribution chart of all grades on all tests
       outputBarChart();
    } // end method processGrades
 
    // find minimum grade
    public int getMinimum()
    { 
-      int lowGrade = grades[ 0 ]; // assume grades[ 0 ] is smallest
+      // assume first element of grades array is smallest
+      int lowGrade = grades[ 0 ][ 0 ];
 
-      // loop through grades array
-      for ( int grade : grades ) 
+      // loop through rows of grades array
+      for ( int studentGrades[] : grades ) 
       {
-         // if grade lower than lowGrade, assign it to lowGrade
-         if ( grade < lowGrade )
-            lowGrade = grade; // new lowest grade
-      } // end for
+         // loop through columns of current row
+         for ( int grade : studentGrades ) 
+         {
+            // if grade less than lowGrade, assign it to lowGrade
+            if ( grade < lowGrade )
+               lowGrade = grade;
+         } // end inner for
+      } // end outer for
 
       return lowGrade; // return lowest grade
    } // end method getMinimum
@@ -69,44 +72,52 @@ public class GradeBook
    // find maximum grade
    public int getMaximum()
    { 
-      int highGrade = grades[ 0 ]; // assume grades[ 0 ] is largest
+      // assume first element of grades array is largest
+      int highGrade = grades[ 0 ][ 0 ];
 
-      // loop through grades array
-      for ( int grade : grades ) 
+      // loop through rows of grades array
+      for ( int studentGrades[] : grades ) 
       {
-         // if grade greater than highGrade, assign it to highGrade
-         if ( grade > highGrade )
-            highGrade = grade; // new highest grade
-      } // end for
+         // loop through columns of current row
+         for ( int grade : studentGrades ) 
+         {
+            // if grade greater than highGrade, assign it to highGrade
+            if ( grade > highGrade )
+               highGrade = grade;
+         } // end inner for
+      } // end outer for
 
       return highGrade; // return highest grade
    } // end method getMaximum
 
-   // determine average grade for test
-   public double getAverage()
+   // determine average grade for particular student (or set of grades)
+   public double getAverage( int setOfGrades[] )
    {      
       int total = 0; // initialize total
  
       // sum grades for one student
-      for ( int grade : grades )
+      for ( int grade : setOfGrades )
          total += grade;
 
       // return average of grades
-      return (double) total / grades.length;
+      return (double) total / setOfGrades.length;
    } // end method getAverage
 
-   // output bar chart displaying grade distribution
+   // output bar chart displaying overall grade distribution
    public void outputBarChart()
    {
-      System.out.println( "Grade distribution:" );
+      System.out.println( "Overall grade distribution:" );
 
       // stores frequency of grades in each range of 10 grades
       int frequency[] = new int[ 11 ];
       
-      // for each grade, increment the appropriate frequency 
-      for ( int grade : grades )
-         ++frequency[ grade / 10 ];
-
+      // for each grade in GradeBook, increment the appropriate frequency 
+      for ( int studentGrades[] : grades )
+      {
+         for ( int grade : studentGrades )
+            ++frequency[ grade / 10 ];
+      } // end outer for
+      
       // for each grade frequency, print bar in chart
       for ( int count = 0; count < frequency.length; count++ )
       {
@@ -127,13 +138,29 @@ public class GradeBook
 
    // output the contents of the grades array
    public void outputGrades()
-   {    
+   {
       System.out.println( "The grades are:\n" );
-      
-      // output each student's grade
+      System.out.print( "            " ); // align column heads
+
+      // create a column heading for each of the tests
+      for ( int test = 0; test < grades[ 0 ].length; test++ ) 
+         System.out.printf( "Test %d  ", test + 1 );
+
+      System.out.println( "Average" ); // student average column heading
+
+      // create rows/columns of text representing array grades
       for ( int student = 0; student < grades.length; student++ ) 
-         System.out.printf( "Student %2d: %3d\n", 
-            student + 1, grades[ student ] );
+      {
+         System.out.printf( "Student %2d", student + 1 );
+
+         for ( int test : grades[ student ] ) // output student's grades
+            System.out.printf( "%8d", test );
+
+         // call method getAverage to calculate student's average grade;
+         // pass row of grades as the argument to getAverage
+         double average = getAverage( grades[ student ] );
+         System.out.printf( "%9.2f\n", average );
+      } // end outer for
    } // end method outputGrades
 } // end class GradeBook
 

@@ -1,13 +1,22 @@
-// Fig. 7.15: GradeBookTest.java
-// Creates GradeBook object using an array of grades.
+// Fig. 7.19: GradeBookTest.java
+// Creates GradeBook object using a two-dimensional array of grades.
 
 public class GradeBookTest
-{ 
+{
    // main method begins program execution
    public static void main( String args[] )
    {
-      // one-dimensional array of student grades
-      int gradesArray[] = { 87, 68, 94, 100, 83, 78, 85, 91, 76, 87 };
+      // two-dimensional array of student grades
+      int gradesArray[][] = { { 87, 96, 70 },
+                              { 68, 87, 90 },
+                              { 94, 100, 90 },
+                              { 100, 81, 82 },
+                              { 83, 65, 85 },
+                              { 78, 87, 65 },
+                              { 85, 75, 83 }, 
+                              { 91, 94, 100 },
+                              { 76, 72, 84 },
+                              { 87, 93, 73 } };
       
       GradeBook myGradeBook = new GradeBook( 
          "CS101 Introduction to Java Programming", gradesArray );
